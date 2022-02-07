@@ -95,26 +95,16 @@ const i18Obj = {
   }
 }
 
-
 function toggleMenu() {
   hamburger.classList.toggle('open');  
   nav.classList.toggle('open'); 
   menu_hover.classList.toggle('after');
   
-}
-
-
-
-
- 
+} 
 
 hamburger.addEventListener('click', toggleMenu);
 menu_hover.addEventListener('click', toggleMenu);
 nav.addEventListener('click',toggleMenu);
-
-
-
-
 
 
 
@@ -219,4 +209,81 @@ function lightTheme(){
 lightThemeBut.addEventListener('click', lightThemeButton)
 lightThemeBut.addEventListener('click', lightTheme)
 
+
+
+/*video_player*/
+const vidWrapper = document.querySelector('div.player');
+const myVid = document.querySelector('.player__video');
+const controlVol = document.querySelector('.volume').oninput = updateVol;
+const controlPlay = document.querySelector('.play_btn');
+const progressBar = document.querySelector('.progress');
+const progressBar2 = document.querySelector('.progress').oninput = videoRewind;
+const controlVol2 = document.querySelector('.volume');
+const controlMute = document.querySelector('.mute');
+const videoWrap = document.querySelector('.wrap_video');
+const playerBtnWrap = document.querySelector('.player_btn_wrap');
+
+controlPlay.addEventListener('click', playVideo);
+myVid.addEventListener('click', playVideo);
+controlMute.addEventListener('click', volumeButton);
+playerBtnWrap.addEventListener('click', playVideo);
+videoWrap.addEventListener('click', playVideo);
+
+
+
+function playVideo() {
+  if(myVid.paused){
+  myVid.play();
+  controlPlay.classList.add('pause')
+  videoWrap.classList.add('none' ) 
+  playerBtnWrap.classList.add('none')
+  } else {
+  myVid.pause();
+  controlPlay.classList.remove('pause')
+  playerBtnWrap.classList.remove('none')
+  }
+}
+
+
+
+function updateVol(){  
+  var volume = this.value;
+  myVid.volume = volume/100;
+  if(myVid.volume === 0){
+    controlMute.classList.add('off');
+  } else {
+    controlMute.classList.remove('off');
+  }
+} 
+
+function volumeButton(){
+  controlMute.classList.toggle('off');
+  if(controlMute.classList.contains('off')) {
+    myVid.muted  = true;
+  } else {
+    myVid.muted  = false;
+  }  
+}
+
+
+controlVol2.addEventListener('input', function() {
+  const value = this.value;
+  this.style.background = `linear-gradient(to right, #bdae82 0%, #bdae82 ${value}%, #c8c8c8 ${value}%, #c8c8c8 100%)`
+})
+
+myVid.ontimeupdate = progressUpdate;
+
+
+
+function progressUpdate() {
+   progressBar.value = (myVid.currentTime / myVid.duration) * 100;     
+   progressBar.style.background = `linear-gradient(to right, #bdae82 0%, #bdae82 ${progressBar.value}%, #c8c8c8 ${progressBar.value}%, #c8c8c8 100%)`;  
+}
+
+
+function videoRewind() {
+  myVid.pause();
+  myVid.currentTime =  (myVid.duration * event.target.value) / 100;
+  myVid.play();
+}
 
